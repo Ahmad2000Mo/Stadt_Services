@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="de">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Bundesland Services</title>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+      <div class="container">
+         <!-- Search Section -->
+         <div class="search-section" id="searchSection">
+            <h1 class="title">Stadt Services</h1>
+            <p class="subtitle">Entdecken Sie Services und Informationen zu deutschen Städten</p>
+            <div class="search-container">
+               <input 
+                  type="text" 
+                  class="search-input" 
+                  id="searchInput" 
+                  placeholder="Stadt eingeben (z.B. Berlin, Hamburg...)"
+                  autocomplete="off"
+                  aria-label="Bundesland suchen"
+                  >
+               <div class="search-suggestions" id="searchSuggestions" role="listbox"></div>
+            </div>
+         </div>
+         <!-- Services Section -->
+         <div class="services-section" id="servicesSection">
+           <button class="back-button" id="backButton" aria-label="Zurück zur Suche">
+            Zurück
+            </button>
+            <div class="selected-state">
+               <h2 id="selectedStateName"></h2>
+               <p>Wählen Sie einen Service aus:</p>
+            </div>
+            <div class="services-grid">
+            <div class="service-card" data-service="images" role="button" tabindex="0" aria-label="Stadtbilder anzeigen">
+                <div class="service-icon">🖼️</div>
+                <h3 class="service-title">Stadtbilder</h3>
+                <p class="service-description">Fotos und Eindrücke aus der Region</p>
+            </div>
+               <div class="service-card" data-service="statistics" role="button" tabindex="0" aria-label="Statistiken anzeigen">
+                  <div class="service-icon">📊</div>
+                  <h3 class="service-title">Statistiken</h3>
+                  <p class="service-description">Bevölkerung, Wirtschaftsdaten und demografische Informationen</p>
+               </div>
+               <div class="service-card" data-service="news" role="button" tabindex="0" aria-label="Nachrichten anzeigen">
+                  <div class="service-icon">📰</div>
+                  <h3 class="service-title">Nachrichten</h3>
+                  <p class="service-description">Aktuelle Nachrichten und Ereignisse aus der Region</p>
+               </div>
+               <div class="service-card" data-service="weather" role="button" tabindex="0" aria-label="Wetter anzeigen">
+                  <div class="service-icon">🌤️</div>
+                  <h3 class="service-title">Wetter</h3>
+                  <p class="service-description">Aktuelle Wetterlage und Vorhersage</p>
+               </div>
+               <div class="service-card" data-service="holidays" role="button" tabindex="0" aria-label="Feiertage anzeigen">
+                  <div class="service-icon">🎉</div>
+                  <h3 class="service-title">Feiertage</h3>
+                  <p class="service-description">Gesetzliche und regionale Feiertage</p>
+               </div>
+               <div class="service-card" data-service="vacation" role="button" tabindex="0" aria-label="Schulferien anzeigen">
+                  <div class="service-icon">📅</div>
+                  <h3 class="service-title">Schulferien</h3>
+                  <p class="service-description">Ferienkalender und schulfreie Tage</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Overlay -->
+      <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+         <div class="overlay-content">
+            <div class="overlay-header">
+               <h2 class="overlay-title" id="overlayTitle"></h2>
+               <button class="close-button" id="closeButton" aria-label="Schließen">&times;</button>
+            </div>
+            <div id="overlayBody">
+               <div class="loading">
+                  <div class="spinner"></div>
+                  <p>Daten werden geladen...</p>
+               </div>
+            </div>
+         </div>
+      </div>
+
+<div id="wizard" style="display:none; padding: 1rem;">
+  <!-- Schritt 1: Zeitraum -->
+  <div id="step1">
+    <h3>Schritt 1: Zeitraum wählen</h3>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <label>Von:
+        <input type="number" id="fromYear" min="1900" max="2025" value="2015">
+      </label>
+      <label>Bis:
+        <input type="number" id="toYear" min="1900" max="2025" value="2023">
+      </label>
+    </div>
+    <div style="margin-top: 1rem;">
+      <button id="nextStep1" class="btn-primary">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- Schritt 2: Kategorie -->
+  <div id="step2" style="display:none;">
+    <h3>Schritt 2: Thema wählen</h3>
+    <div id="categoryFeedback" style="margin-top: 0.8rem; color: green;"></div>
+    <div id="categoryCards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 1rem;">
+    
+      <div class="category-card" data-category="population">
+        <h4>👥 Fortschreibung des Bevölkerungsstandes</h4>
+        <p>Entwicklung der Einwohnerzahl über die Jahre</p>
+      </div>
+      <div class="category-card" data-category="births">
+        <h4>👶 Geburten</h4>
+        <p>Anzahl der Geburten pro Jahr</p>
+      </div>
+      <div class="category-card" data-category="deaths">
+        <h4>⚰️ Sterbefälle</h4>
+        <p>Anzahl der Todesfälle pro Jahr</p>
+      </div>
+      <div class="category-card" data-category="marriages">
+        <h4>💍 Eheschließungen</h4>
+        <p>Wie viele Paare haben geheiratet?</p>
+      </div>
+    </div>
+    <div style="margin-top: 1.5rem;">
+      <button id="backStep2" class="btn-secondary">← Zurück</button>
+      <button id="nextStep2" class="btn-primary" disabled>Anzeigen 📈</button>
+    </div>
+  </div>
+</div>
+
+      <!-- Image Modal -->
+<div id="myModal" class="modal" style="display:none;">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="img01">
+  <div id="caption"></div>
+</div>
+
+      <script>
+const germanStates = []; // Wird durch Fetch befüllt
+
+// Manuelle Liste der Bundesländer
+const bundeslaender = [
+  "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
+  "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
+  "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein",
+  "Thüringen"
+];
+
+// Daten laden und aufbereiten
+fetch('landkreise.json')
+  .then(response => response.json())
+  .then(data => {
+    const kreise = data.map(item => {
+      const name = item["Kreisfreie Stadt, Kreis/Landkreis"].split(',')[0].trim();
+      return name;
+    });
+
+    germanStates.push(...kreise, ...bundeslaender);
+
+    // Optional: Duplikate entfernen
+    // const uniqueStates = [...new Set(germanStates)];
+    // console.log(uniqueStates);
+  })
+  .catch(error => {
+    console.error('Fehler beim Laden der Landkreis-Daten:', error);
+  });
+         // DOM elements
+         const searchSection = document.getElementById('searchSection');
+         const servicesSection = document.getElementById('servicesSection');
+         const searchInput = document.getElementById('searchInput');
+         const searchSuggestions = document.getElementById('searchSuggestions');
+         const selectedStateName = document.getElementById('selectedStateName');
+         const backButton = document.getElementById('backButton');
+         const serviceCards = document.querySelectorAll('.service-card');
+         const overlay = document.getElementById('overlay');
+         const overlayTitle = document.getElementById('overlayTitle');
+         const overlayBody = document.getElementById('overlayBody');
+         const closeButton = document.getElementById('closeButton');
+         
+         let currentState = '';
+         
+         // Search functionality
+         searchInput.addEventListener('input', function() {
+             const query = this.value.toLowerCase().trim();
+             
+             if (query.length === 0) {
+                 searchSuggestions.style.display = 'none';
+                 return;
+             }
+         
+             const matches = germanStates.filter(state => 
+                 state.toLowerCase().includes(query)
+             );
+         
+             if (matches.length > 0) {
+                 searchSuggestions.innerHTML = matches.map(state => 
+                     `<div class="suggestion-item" data-state="${state}" role="option">${state}</div>`
+                 ).join('');
+                 searchSuggestions.style.display = 'block';
+             } else {
+                 searchSuggestions.style.display = 'none';
+             }
+         });
+         
+         // Handle suggestion clicks
+         searchSuggestions.addEventListener('click', function(e) {
+             if (e.target.classList.contains('suggestion-item')) {
+                 const state = e.target.dataset.state;
+                 selectState(state);
+             }
+         });
+         
+         // Handle Enter key
+         searchInput.addEventListener('keydown', function(e) {
+             if (e.key === 'Enter') {
+                 const firstSuggestion = searchSuggestions.querySelector('.suggestion-item');
+                 if (firstSuggestion) {
+                     selectState(firstSuggestion.dataset.state);
+                 }
+             }
+         });
+         
+         // Select state function
+         function selectState(state) {
+             currentState = state;
+             selectedStateName.textContent = state;
+             
+             // Hide search section with animation
+             searchSection.classList.add('hidden');
+             
+             // Show services section after animation
+             setTimeout(() => {
+                 searchSection.style.display = 'none';
+                 servicesSection.classList.add('visible');
+             }, 500);
+             
+             // Clear search
+             searchInput.value = '';
+             searchSuggestions.style.display = 'none';
+         }
+         
+         // Back button
+         backButton.addEventListener('click', function() {
+             servicesSection.classList.remove('visible');
+             searchSection.style.display = 'block';
+             searchSection.classList.remove('hidden');
+             currentState = '';
+         });
+         
+         // Service card clicks
+         serviceCards.forEach(card => {
+             card.addEventListener('click', function(e) {
+                 e.preventDefault();
+                 const service = this.dataset.service;
+                 openServiceOverlay(service);
+             });
+         
+             // Keyboard accessibility
+             card.addEventListener('keydown', function(e) {
+                 if (e.key === 'Enter' || e.key === ' ') {
+                     e.preventDefault();
+                     const service = this.dataset.service;
+                     openServiceOverlay(service);
+                 }
+             });
+         });
+         
+         // Open service overlay
+         function openServiceOverlay(serviceType) {
+             const serviceNames = {
+                 images: 'Bildersammlung',
+                 news: 'Aktuelle Nachrichten',
+                 weather: 'Wettervorhersage',
+                 holidays: 'Feiertage',
+                 vacation: 'Schulferien',
+                 statistics: 'Statistiken'
+             };
+         
+             overlayTitle.textContent = `${serviceNames[serviceType]}`;
+             overlayBody.innerHTML = '<div class="loading"><div class="spinner"></div><p>Daten werden geladen...</p></div>';
+             overlay.classList.add('visible');
+         
+             // Simulate API call
+             setTimeout(() => {
+                 loadServiceData(serviceType);
+             }, 1000);
+         }
+         //
+         function renderFeiertagsKalender(feiertage) {
+             const container = document.getElementById('feiertagsKalenderContainer');
+             const monate = [
+                 "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+                 "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"
+             ];
+         
+             const daysInMonth = (month) => new Date(2025, month + 1, 0).getDate();
+         
+             const table = document.createElement("table");
+             table.className = "ferienkalender"; // gleiche Klasse für Layout
+         
+             // Kopfzeile
+             const head = document.createElement("thead");
+             const headRow = document.createElement("tr");
+             headRow.innerHTML = `<th>Tag</th>` + monate.map(m => `<th>${m}</th>`).join('');
+             head.appendChild(headRow);
+             table.appendChild(head);
+         
+             // Tagesraster
+             const body = document.createElement("tbody");
+             for (let day = 1; day <= 31; day++) {
+                 const row = document.createElement("tr");
+                 row.innerHTML = `<td>${day}</td>`;
+         
+                 for (let month = 0; month < 12; month++) {
+                     const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                     const date = new Date(dateStr);
+         
+                     let cell = document.createElement("td");
+                     if (day <= daysInMonth(month)) {
+                         const holiday = feiertage.find(f =>
+                             f.date.getDate() === day && f.date.getMonth() === month
+                         );
+                         if (holiday) {
+                             cell.className = "feiertag-tag";
+                             cell.title = holiday.name;
+                         }
+                     } else {
+                         cell.className = "leer";
+                     }
+         
+                     row.appendChild(cell);
+                 }
+         
+                 body.appendChild(row);
+             }
+         
+             table.appendChild(body);
+             container.appendChild(table);
+         }
+         // Load service data (mock implementation)
+         function loadServiceData(serviceType) {
+             let content = '';
+         
+             switch (serviceType) {
+         case 'statistics':
+
+            const searchText = currentState;
+            const searchurl = `https://openplzapi.org/de/FullTextSearch?searchTerm=${encodeURIComponent(searchText)}`;
+
+            overlayBody.innerHTML = '<div class="loading"><div class="spinner"></div><p>Bundesland wird ermittelt...</p></div>';
+
+            fetch(searchurl)
+            .then(res => res.json())
+            .then(results => {
+                if (!results || results.length === 0 || !results[0].federalState) {
+                    overlayBody.innerHTML = 'Bundesland nicht gefunden.';
+                    return;
+                }
+
+                selectedcurrentState = results[0].federalState.name;
+                initStatWizard(); // danach normal Wizard starten
+            })
+            .catch(() => {
+                overlayBody.innerHTML = 'Fehler bei der Bundeslandermittlung.';
+            });
+            
+         // Chart.js per CDN laden, falls noch nicht vorhanden
+         if (!window.Chart) {
+         const script = document.createElement('script');
+         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+         script.onload = initStatWizard;
+         document.head.appendChild(script);
+         } else {
+         initStatWizard();
+         }
+         
+         
+         
+         function initStatWizard() {
+    overlayBody.innerHTML = ''; // Vorherige Inhalte löschen
+
+    const wizardTemplate = document.getElementById("wizard");
+    const wizardClone = wizardTemplate.cloneNode(true);
+    wizardClone.style.display = "block";
+    wizardClone.id = "wizard-clone";
+
+    overlayBody.appendChild(wizardClone);
+
+    const step1 = wizardClone.querySelector("#step1");
+    const step2 = wizardClone.querySelector("#step2");
+    const nextBtn = wizardClone.querySelector("#nextStep2");
+    const feedback = wizardClone.querySelector("#categoryFeedback");
+    const cards = wizardClone.querySelectorAll('.category-card');
+
+    step1.style.display = "block";
+    step2.style.display = "none";
+
+    let selectedCategory = null;
+
+    // Schritt 1 → Schritt 2
+    wizardClone.querySelector("#nextStep1").addEventListener("click", () => {
+        step1.style.display = "none";
+        step2.style.display = "block";
+    });
+
+    // Zurück zu Schritt 1
+    wizardClone.querySelector("#backStep2").addEventListener("click", () => {
+        step2.style.display = "none";
+        step1.style.display = "block";
+    });
+
+    // Kategorie-Card Auswahl
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            cards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            selectedCategory = card.dataset.category;
+            feedback.textContent = `Themen-Auswahl "${card.querySelector('h4').textContent}" ausgewählt.`;
+            nextBtn.disabled = false;
+        });
+    });
+
+    // Schritt 2 → Diagramm laden
+    nextBtn.addEventListener('click', () => {
+        const from = wizardClone.querySelector("#fromYear").value;
+        const to = wizardClone.querySelector("#toYear").value;
+
+        overlayBody.innerHTML = '<div class="loading"><div class="spinner"></div><p>Diagramme werden geladen...</p></div>';
+
+        fetch(`/it-service-v2/genesis-statistics.php?state=${encodeURIComponent(selectedcurrentState)}&category=${selectedCategory}&startYear=${from}&endYear=${to}`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.error) {
+                    overlayBody.innerHTML = `<p class="error">❌ Fehler: ${result.error}</p>`;
+                    return;
+                }
+                
+                renderCharts(result, searchText);
+            })
+            .catch(err => {
+                console.error(err);
+                overlayBody.innerHTML = '<p class="error">❌ Fehler beim Laden der Statistikdaten.</p>';
+            });
+    });
+}
+
+function renderCharts(data, inputName) {
+    const stateKey = Object.keys(data)[0];
+    const stateData = data[stateKey];
+    console.log(stateData);
+    if (!stateData) {
+        overlayBody.innerHTML = `<p class="error">Keine Daten für ${stateKey} verfügbar.</p>`;
+        return;
+    }
+
+    // Main container setup
+    const mainContainer = document.createElement('div');
+    mainContainer.className = 'stats-dashboard';
+    
+    // Header with back button and title
+    const header = document.createElement('div');
+    header.className = 'dashboard-header';
+    header.innerHTML = `
+        <button class="btn back-btn" id="backToWizard">
+            <span>←</span> Zurück zum Anfang
+        </button>
+        <h2 class="dashboard-title">Statistiken für ${stateKey} (${inputName})</h2>
+    `;
+
+    setTimeout(() => {
+        document.getElementById("backToWizard").addEventListener("click", () => {
+            initStatWizard();
+        });
+    }, 0);
+
+    // Control panel for chart options and filters
+    const controlPanel = document.createElement('div');
+    controlPanel.className = 'control-panel';
+    
+    // Chart type selector
+    const chartTypeSelector = document.createElement('div');
+    chartTypeSelector.className = 'control-group';
+    chartTypeSelector.innerHTML = `
+        <label>Diagrammtyp:</label>
+        <select id="chartType" class="control-select">
+            <option value="line">Liniendiagramm</option>
+            <option value="bar">Balkendiagramm</option>
+            <option value="area">Flächendiagramm</option>
+            <option value="doughnut">Kreisdiagramm</option>
+        </select>
+    `;
+
+    // Year range filter
+   // Year range filter – gültige Jahreszahlen extrahieren
+const years = Object.keys(stateData)
+    .map(dateStr => {
+        const match = dateStr.match(/\d{4}$/); // Holt die letzten 4 Ziffern = Jahr
+        
+        return match ? parseInt(match[0]) : null;
+    })
+    .filter(year => year !== null)
+    .sort((a, b) => a - b);
+
+    console.log(stateData);
+    const minYear = Math.min(...years);
+    const maxYear = Math.max(...years);
+    
+    const yearFilter = document.createElement('div');
+    yearFilter.className = 'control-group year-filter';
+    yearFilter.innerHTML = `
+        <label>Zeitraum:</label>
+        <div class="year-range">
+            <input type="range" id="yearStart" min="${minYear}" max="${maxYear}" value="${minYear}" class="year-slider">
+            <span id="yearStartLabel">${minYear}</span>
+            <span>bis</span>
+            <input type="range" id="yearEnd" min="${minYear}" max="${maxYear}" value="${maxYear}" class="year-slider">
+            <span id="yearEndLabel">${maxYear}</span>
+        </div>
+    `;
+
+    // View toggle buttons
+    const viewToggle = document.createElement('div');
+    viewToggle.className = 'view-toggle';
+    viewToggle.innerHTML = `
+        <button class="toggle-btn active" data-view="chart">📊 Diagramm</button>
+        <button class="toggle-btn" data-view="table">📋 Tabelle</button>
+        
+    `;
+
+    controlPanel.appendChild(chartTypeSelector);
+    controlPanel.appendChild(yearFilter);
+    controlPanel.appendChild(viewToggle);
+
+    // Chart container
+    const chartContainer = document.createElement('div');
+    chartContainer.className = 'chart-container';
+    chartContainer.innerHTML = `
+        <div class="chart-wrapper">
+            <canvas id="mainChart"></canvas>
+        </div>
+        <div class="chart-stats">
+            <div class="stat-item">
+                <span class="stat-label">Durchschnitt:</span>
+                <span class="stat-value" id="avgValue">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Maximum:</span>
+                <span class="stat-value" id="maxValue">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Minimum:</span>
+                <span class="stat-value" id="minValue">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Trend:</span>
+                <span class="stat-value" id="trendValue">-</span>
+            </div>
+        </div>
+    `;
+
+    // Table container
+    const tableContainer = document.createElement('div');
+    tableContainer.className = 'table-container hidden';
+    tableContainer.innerHTML = `
+        <div class="table-wrapper">
+            <table class="data-table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Jahr</th>
+                        <th>Wert</th>
+                        <th>Änderung</th>
+                        <th>Änderung %</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    // Assemble the dashboard
+    mainContainer.appendChild(header);
+    mainContainer.appendChild(controlPanel);
+    mainContainer.appendChild(chartContainer);
+    mainContainer.appendChild(tableContainer);
+
+    // Clear and populate overlay
+    overlayBody.innerHTML = '';
+    overlayBody.appendChild(mainContainer);
+
+    // Add styles
+    addDashboardStyles();
+
+    // Initialize chart
+    let chartInstance = null;
+    
+    function updateChart() {
+        const chartType = document.getElementById('chartType').value;
+        const startYear = parseInt(document.getElementById('yearStart').value);
+        const endYear = parseInt(document.getElementById('yearEnd').value);
+        
+        // Filter data by year range
+// Filter data by year range
+const filteredData = {};
+
+Object.keys(stateData).forEach(dateStr => {
+    // Jahr extrahieren aus 'dd.mm.yyyy'
+    const match = dateStr.match(/\d{4}$/); // Holt die letzten 4 Ziffern
+    if (!match) return; // überspringen, falls kein Jahr gefunden
+
+    const yearNum = parseInt(match[0]); // z. B. "2015" → 2015
+
+    if (yearNum >= startYear && yearNum <= endYear) {
+        filteredData[dateStr] = stateData[dateStr]; // Original-Datum beibehalten
+    }
+});
+        
+        const filteredYears = Object.keys(filteredData).sort();
+        const filteredValues = filteredYears.map(year => filteredData[year]);
+        
+        // Destroy existing chart
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        
+        // Chart configuration based on type
+        let chartConfig = {
+            type: chartType,
+            data: {
+                labels: filteredYears,
+                datasets: [{
+                    label: `${stateKey} (${inputName})`,
+                    data: filteredValues,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: chartType === 'doughnut' ? 
+                        generateColors(filteredValues.length) : 
+                        'rgba(54, 162, 235, 0.2)',
+                    fill: chartType === 'area',
+                    tension: 0.4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: chartType === 'doughnut',
+                        position: 'right'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y || context.parsed;
+                                return `${context.dataset.label}: ${value?.toLocaleString() || value}`;
+                            }
+                        }
+                    }
+                },
+                scales: chartType !== 'doughnut' ? {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Jahr'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Wert'
+                        },
+                        beginAtZero: false
+                    }
+                } : {}
+            }
+        };
+        
+        chartInstance = new Chart(ctx, chartConfig);
+        
+        // Update statistics
+        updateStatistics(filteredValues);
+        updateTable(filteredData);
+    }
+    
+    function updateStatistics(values) {
+        if (values.length === 0) return;
+        
+        const avg = values.reduce((a, b) => a + b, 0) / values.length;
+        const max = Math.max(...values);
+        const min = Math.min(...values);
+        
+        // Calculate trend
+        let trend = 'Stabil';
+        if (values.length > 1) {
+            const firstHalf = values.slice(0, Math.floor(values.length / 2));
+            const secondHalf = values.slice(Math.floor(values.length / 2));
+            const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+            const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+            
+            if (secondAvg > firstAvg * 1.05) trend = '📈 Steigend';
+            else if (secondAvg < firstAvg * 0.95) trend = '📉 Fallend';
+            else trend = '➡️ Stabil';
+        }
+        
+        document.getElementById('avgValue').textContent = avg.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+        document.getElementById('maxValue').textContent = max.toLocaleString('de-DE');
+        document.getElementById('minValue').textContent = min.toLocaleString('de-DE');
+        document.getElementById('trendValue').textContent = trend;
+    }
+    
+    function updateTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        const sortedYears = Object.keys(data).sort();
+        
+        sortedYears.forEach((year, index) => {
+            const value = data[year];
+            const prevValue = index > 0 ? data[sortedYears[index - 1]] : null;
+            const change = prevValue ? value - prevValue : null;
+            const changePercent = prevValue ? ((change / prevValue) * 100) : null;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${year}</td>
+                <td>${value.toLocaleString('de-DE')}</td>
+                <td class="${change > 0 ? 'positive' : change < 0 ? 'negative' : ''}">${
+                    change ? (change > 0 ? '+' : '') + change.toLocaleString('de-DE') : '-'
+                }</td>
+                <td class="${changePercent > 0 ? 'positive' : changePercent < 0 ? 'negative' : ''}">${
+                    changePercent ? (changePercent > 0 ? '+' : '') + changePercent.toFixed(1) + '%' : '-'
+                }</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+    
+    function generateColors(count) {
+        const colors = [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 205, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)'
+        ];
+        return Array.from({length: count}, (_, i) => colors[i % colors.length]);
+    }
+    
+    // Event listeners
+    document.getElementById('chartType').addEventListener('change', updateChart);
+    
+    const yearStartSlider = document.getElementById('yearStart');
+    const yearEndSlider = document.getElementById('yearEnd');
+    const yearStartLabel = document.getElementById('yearStartLabel');
+    const yearEndLabel = document.getElementById('yearEndLabel');
+    
+    yearStartSlider.addEventListener('input', function() {
+        yearStartLabel.textContent = this.value;
+        if (parseInt(this.value) > parseInt(yearEndSlider.value)) {
+            yearEndSlider.value = this.value;
+            yearEndLabel.textContent = this.value;
+        }
+        updateChart();
+    });
+    
+    yearEndSlider.addEventListener('input', function() {
+        yearEndLabel.textContent = this.value;
+        if (parseInt(this.value) < parseInt(yearStartSlider.value)) {
+            yearStartSlider.value = this.value;
+            yearStartLabel.textContent = this.value;
+        }
+        updateChart();
+    });
+    
+    // View toggle functionality
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const view = this.getAttribute('data-view');
+            const chartContainer = document.querySelector('.chart-container');
+            const tableContainer = document.querySelector('.table-container');
+            
+            switch(view) {
+                case 'chart':
+                    chartContainer.classList.remove('hidden');
+                    tableContainer.classList.add('hidden');
+                    break;
+                case 'table':
+                    chartContainer.classList.add('hidden');
+                    tableContainer.classList.remove('hidden');
+                    break;
+                case 'both':
+                    chartContainer.classList.remove('hidden');
+                    tableContainer.classList.remove('hidden');
+                    break;
+            }
+        });
+    });
+    
+    // Initialize
+    updateChart();
+}
+
+function addDashboardStyles() {
+    if (document.getElementById('dashboard-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'dashboard-styles';
+    
+    document.head.appendChild(style);
+}
+         
+         break;
+         case 'images':
+         const apiKey = "i33VXd3Uh2ox_CUxfgiGdP0dOFMGCXw1-4WbH59WjI4";
+         const imageUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(currentState)}&per_page=30&orientation=landscape&client_id=${apiKey}`;
+         
+         overlayBody.innerHTML = '<div class="loading"><div class="spinner"></div><p>Bilder werden geladen...</p></div>';
+         
+         fetch(imageUrl)
+         .then(res => res.json())
+         .then(data => {
+             if (!data.results || data.results.length === 0) {
+                 overlayBody.innerHTML = `<p>Keine Bilder zu "${currentState}" gefunden.</p>`;
+                 return;
+             }
+         
+             const gallery = data.results.map(img => `
+                 <a class="city-image" rel="noopener noreferrer">
+                 <img src="${img.urls.regular}" alt="${img.alt_description || currentState}"></a>`).join('');
+         
+         
+             overlayBody.innerHTML = `
+         <h3>Bilder von ${currentState}</h3>
+         <div class="image-grid">${gallery}</div>
+         `;
+         })
+         .catch(err => {
+             console.error(err);
+             overlayBody.innerHTML = 'Fehler beim Laden der Bilder.';
+         });
+         break;
+         
+case 'news':
+  fetch(`https://gnews.io/api/v4/search?q=${currentState}&lang=de&token=430f95e5c34c4325cd47110d2937c417`)
+    .then(res => res.json())
+    .then(data => {
+      const articles = data.articles || data.results || [];
+      const content = articles.slice(0, 10).map(a => `
+        <div class="news-article">
+          ${a.image ? `<img src="${a.image}" alt="${a.title}" class="news-image" onerror="this.style.display='none'">` : ''}
+          <div class="news-content">
+            <h4>${a.title}</h4>
+            <p>${a.description || ''}</p>
+            <div class="news-meta">
+              <small>${new Date(a.publishedAt).toLocaleString()}</small>
+              ${a.source?.name ? `<span class="news-source">Quelle: ${a.source.name}</span>` : ''}
+            </div>
+            <a href="${a.url}" target="_blank" class="news-link">Artikel lesen</a>
+          </div>
+        </div>
+      `).join('');
+      overlayBody.innerHTML = content || 'Keine Artikel gefunden.';
+    })
+    .catch(err => {
+      console.error(err);
+      overlayBody.innerHTML = 'Fehler beim Laden der Nachrichten.';
+    });
+  break;
+         case 'weather':
+Promise.all([
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentState},DE&units=metric&lang=de&appid=4ddd80a95db775ed3837773d5a82c5b2`).then(res => res.json()),
+fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${currentState},DE&units=metric&lang=de&appid=4ddd80a95db775ed3837773d5a82c5b2`).then(res => res.json())
+])
+.then(([current, forecast]) => {
+if (current.cod !== 200) {
+overlayBody.innerHTML = `
+<p class="error">❌ Fehler: ${current.message}</p>
+`;
+return;
+}
+function getEmoji(desc) {
+const d = desc.toLowerCase();
+if (d.includes("klar")) return "☀️";
+if (d.includes("sonnig")) return "🌞";
+if (d.includes("wolkenlos")) return "🌤️";
+if (d.includes("bewölkt") || d.includes("wolkig")) return "☁️";
+if (d.includes("regen") || d.includes("schauer")) return "🌧️";
+if (d.includes("gewitter")) return "⛈️";
+if (d.includes("schnee")) return "❄️";
+if (d.includes("nebel")) return "🌫️";
+return "🌡️";
+}
+const emoji = getEmoji(current.weather[0].description);
+const currentWeatherHtml = `
+<div style="max-width: 800px; margin: 0 auto; padding: 15px; border-radius: 12px; background: linear-gradient(to bottom right, #e0f7fa, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-family: sans-serif; text-align: center;">
+   <h3 style="font-size: 1.6rem; margin-bottom: 10px; color: #00796b;">Wetter in ${current.name}</h3>
+   
+   <div style="font-size: 3.5rem; margin-bottom: 10px;">${emoji}</div>
+   
+   <div style="font-size: 2.2rem; font-weight: bold; color: #004d40;">
+      ${Math.round(current.main.temp)} °C
+   </div>
+   
+   <p style="font-size: 1.1rem; color: #555; margin-top: 5px;">
+      ${current.weather[0].description}
+   </p>
+   
+   <div style="display: flex;justify-content:space-between; gap: 12px; margin-top: 20px; font-size: 0.95rem; color: #333;">
+      <div>💧 <strong>Luftfeuchte</strong><br>${current.main.humidity}%</div>
+      <div>🌬️ <strong>Wind</strong><br>${current.wind.speed} m/s</div>
+      <div>☁️ <strong>Bewölkung</strong><br>${current.clouds.all}%</div>
+      <div>🌡️ <strong>Gefühlt</strong><br>${current.main.feels_like} °C</div>
+      <div>📈 <strong>Druck</strong><br>${current.main.pressure} hPa</div>
+   </div>
+</div>
+
+`;
+const daily = {};
+forecast.list.forEach(item => {
+const date = item.dt_txt.split(' ')[0];
+const time = item.dt_txt.split(' ')[1];
+if (time.startsWith("12")) {
+if (!daily[date]) {
+const dayName = new Date(date).toLocaleDateString('de-DE', { weekday: 'short' });
+daily[date] = {
+day: dayName,
+temp: Math.round(item.main.temp),
+desc: item.weather[0].description,
+emoji: getEmoji(item.weather[0].description)
+};
+}
+}
+});
+const forecastHtml = `
+<h3 style="text-align:center;margin-top:1rem;">5-Tage-Vorhersage</h3>
+<div style="display: flex; flex-wrap: nowrap; gap: 5px; justify-content: center;">
+   ${Object.values(daily).slice(0, 6).map(d => `
+   <div style="flex: 0 0 20%; background: white; border-radius: 12px; padding: 1rem; text-align: center; box-shadow: var(--shadow-md);">
+      <div style="font-weight: bold;">${d.day}</div>
+      <div style="font-size: 1.5rem;">${d.emoji}</div>
+      <div style="font-size: 1.2rem;">${d.temp} °C</div>
+      <div style="color: var(--text-secondary);">${d.desc}</div>
+   </div>
+   `).join('')}
+</div>
+`;
+overlayBody.innerHTML = currentWeatherHtml + forecastHtml;
+})
+.catch(err => {
+console.error(err);
+overlayBody.innerHTML = '<p class="error">❌ Fehler beim Laden der Wetterdaten.</p>';
+});
+break;
+                     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentState},DE&units=metric&lang=de&appid=4ddd80a95db775ed3837773d5a82c5b2`)
+                         .then(res => res.json())
+                         .then(data => {
+                             if (data.cod !== 200) {
+                                 overlayBody.innerHTML = `<p class="error">❌ Fehler: ${data.message}</p>`;
+                                 return;
+                             }
+         
+                             const icon = data.weather[0].icon;
+                             const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+         
+                             const weatherHtml = `
+                 <div style="text-align: center; padding: 20px;">
+                     <h3 style="font-size: 1.8rem; margin-bottom: 5px;">Wetter in ${data.name}</h3>
+                     <img src="${iconUrl}" alt="${data.weather[0].description}" style="width: 100px; height: 100px;">
+                     <div style="font-size: 2.5rem; font-weight: bold; margin: 10px 0;">
+                         ${Math.round(data.main.temp)} °C
+                     </div>
+                     <p style="font-size: 1.0rem; margin: 5px 0;">
+                         🌥️ ${data.weather[0].description}
+                     </p>
+                     <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+                         <div>💧 Luftfeuchtigkeit: ${data.main.humidity}%</div>
+                         <div>🌬️ Wind: ${data.wind.speed} m/s</div>
+                         <div>☁️ Bewölkung: ${data.clouds.all}%</div>
+                         <div>🌡️ Gefühlt: ${data.main.feels_like} °C</div>
+                         <div>📈 Druck: ${data.main.pressure} hPa</div>
+                     </div>
+                 </div>
+             `;
+         
+                             overlayBody.innerHTML = weatherHtml;
+                         })
+                         .catch(err => {
+                             console.error(err);
+                             overlayBody.innerHTML = '<p class="error">❌ Fehler beim Laden der Wetterdaten.</p>';
+                         });
+                     break;
+                 case 'holidays':
+                     fetch(`https://date.nager.at/api/v3/PublicHolidays/2025/DE`)
+                         .then(res => res.json())
+                         .then(data => {
+                             if (!data || data.length === 0) {
+                                 overlayBody.innerHTML = `Keine Feiertage gefunden.`;
+                                 return;
+                             }
+         
+                             const feiertage = data.map(f => ({
+                                 name: f.localName,
+                                 date: new Date(f.date)
+                             }));
+         
+                             overlayBody.innerHTML = `<h3>Feiertagskalender 2025</h3><div id="feiertagsKalenderContainer"></div>`;
+                             renderFeiertagsKalender(feiertage);
+                         })
+                         .catch(() => {
+                             overlayBody.innerHTML = 'Fehler beim Laden der Feiertage.';
+                         });
+                     break;
+         function renderFeiertagsKalender(feiertage) {
+                     const container = document.getElementById('feiertagsKalenderContainer');
+                     const monate = [
+                         "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+                         "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"
+                     ];
+         
+                     const daysInMonth = (month) => new Date(2025, month + 1, 0).getDate();
+         
+                     const table = document.createElement("table");
+                     table.className = "ferienkalender"; // gleiche Klasse für Layout
+         
+                     // Kopfzeile
+                     const head = document.createElement("thead");
+                     const headRow = document.createElement("tr");
+                     headRow.innerHTML = `<th>Tag</th>` + monate.map(m => `<th>${m}</th>`).join('');
+                     head.appendChild(headRow);
+                     table.appendChild(head);
+         
+                     // Tagesraster
+                     const body = document.createElement("tbody");
+                     for (let day = 1; day <= 31; day++) {
+                         const row = document.createElement("tr");
+                         row.innerHTML = `<td>${day}</td>`;
+         
+                         for (let month = 0; month < 12; month++) {
+                             const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                             const date = new Date(dateStr);
+         
+                             let cell = document.createElement("td");
+                             if (day <= daysInMonth(month)) {
+                                 const holiday = feiertage.find(f =>
+                                     f.date.getDate() === day && f.date.getMonth() === month
+                                 );
+                                 if (holiday) {
+                                     cell.className = "feiertag-tag";
+                                     cell.title = holiday.name;
+                                 }
+                             } else {
+                                 cell.className = "leer";
+                             }
+         
+                             row.appendChild(cell);
+                         }
+         
+                         body.appendChild(row);
+                     }
+         
+                     table.appendChild(body);
+                     container.appendChild(table);
+                 }
+         
+         
+         case 'vacation':
+         const suchbegriff = currentState; // z. B. "Bremerhaven", von Nutzereingabe
+         const searchUrl = `https://openplzapi.org/de/FullTextSearch?searchTerm=${encodeURIComponent(suchbegriff)}`;
+         
+         fetch(searchUrl)
+         .then(res => res.json())
+         .then(results => {
+             if (!results || results.length === 0 || !results[0].federalState) {
+                 overlayBody.innerHTML = 'Bundesland nicht gefunden.';
+                 return;
+             }
+         
+             const bundeslandName = results[0].federalState.name;
+
+             const bundeslandMapping = {
+                 'Baden-Württemberg': 'BW',
+                 'Bayern': 'BY',
+                 'Berlin': 'BE',
+                 'Brandenburg': 'BB',
+                 'Bremen': 'HB',
+                 'Hamburg': 'HH',
+                 'Hessen': 'HE',
+                 'Mecklenburg-Vorpommern': 'MV',
+                 'Niedersachsen': 'NI',
+                 'Nordrhein-Westfalen': 'NW',
+                 'Rheinland-Pfalz': 'RP',
+                 'Saarland': 'SL',
+                 'Sachsen': 'SN',
+                 'Sachsen-Anhalt': 'ST',
+                 'Schleswig-Holstein': 'SH',
+                 'Thüringen': 'TH'
+             };
+         
+             const code = bundeslandMapping[bundeslandName];
+          
+             if (!code) {
+                 overlayBody.innerHTML = 'Feriencode für Bundesland nicht verfügbar.';
+                 return;
+             }
+         
+             fetch(`https://ferien-api.maxleistner.de/api/v1/2025/${code}`)
+                 .then(res => res.json())
+                 .then(data => {
+                     if (!data || data.length === 0) {
+                         overlayBody.innerHTML = `Keine Ferientermine für ${bundeslandName} gefunden.`;
+                         return;
+                     }
+         
+                     const ferien = data.map(f => ({
+                         name: f.name,
+                         start: new Date(f.start),
+                         end: new Date(f.end)
+                     }));
+         
+                     overlayBody.innerHTML = `<h3>Ferienkalender 2025 für ${currentState} (${bundeslandName})</h3><div id="ferienKalenderContainer"></div>`;
+                     renderFerienKalender(ferien);
+                 })
+                 .catch(() => overlayBody.innerHTML = 'Fehler beim Laden der Ferien.');
+         })
+         .catch(() => overlayBody.innerHTML = 'Fehler bei der Ortsabfrage.');
+         break;
+         
+         
+             }
+         
+             overlayBody.innerHTML = content;
+         }
+         
+         // Close overlay
+         closeButton.addEventListener('click', function() {
+             overlay.classList.remove('visible');
+         });
+         
+         // Close overlay on background click
+         overlay.addEventListener('click', function(e) {
+             if (e.target === overlay) {
+                 overlay.classList.remove('visible');
+             }
+         });
+         
+         // Close overlay on Escape key
+         document.addEventListener('keydown', function(e) {
+             if (e.key === 'Escape' && overlay.classList.contains('visible')) {
+                 overlay.classList.remove('visible');
+             }
+         });
+         
+         // Focus management for accessibility
+         overlay.addEventListener('transitionend', function() {
+             if (overlay.classList.contains('visible')) {
+                 closeButton.focus();
+             }
+         });
+
+         // Modal für große Bildansicht
+const modal = document.getElementById("myModal");
+const modalImg = document.getElementById("img01");
+const captionText = document.getElementById("caption");
+const span = document.querySelector(".modal .close");
+
+// Delegation: Bilder in der Galerie vergrößern
+document.addEventListener("click", function(e) {
+  if (e.target.matches(".city-image img")) {
+    modal.style.display = "block";
+    modalImg.src = e.target.src;
+    captionText.textContent = e.target.alt || '';
+  }
+});
+
+
+         function renderFerienKalender(ferien) {
+         const container = document.getElementById('ferienKalenderContainer');
+         const monate = [
+         "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+         "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"
+         ];
+         
+         const daysInMonth = (month) => new Date(2025, month + 1, 0).getDate();
+         
+         const table = document.createElement("table");
+         table.className = "ferienkalender";
+         
+         // Header: Monate
+         const head = document.createElement("thead");
+         const headRow = document.createElement("tr");
+         headRow.innerHTML = `<th>Tag</th>` + monate.map(m => `<th>${m}</th>`).join('');
+         head.appendChild(headRow);
+         table.appendChild(head);
+         
+         // Body: Tage 1 bis 31
+         const body = document.createElement("tbody");
+         for (let day = 1; day <= 31; day++) {
+         const row = document.createElement("tr");
+         row.innerHTML = `<td>${day}</td>`;
+         
+         for (let month = 0; month < 12; month++) {
+             const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+             const date = new Date(dateStr);
+         
+             let cell = document.createElement("td");
+             if (day <= daysInMonth(month)) {
+                 const isHoliday = ferien.some(f => date >= f.start && date <= f.end);
+                 if (isHoliday) {
+                     cell.className = "ferien-tag";
+                     const ferientitel = ferien.find(f => date >= f.start && date <= f.end)?.name || '';
+                     cell.title = ferientitel;
+                 }
+             } else {
+                 cell.className = "leer";
+             }
+         
+             row.appendChild(cell);
+         }
+         
+         body.appendChild(row);
+         }
+         
+         table.appendChild(body);
+         container.appendChild(table);
+         }
+
+// Schließen
+span.onclick = () => modal.style.display = "none";
+modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+      </script>
+   </body>
+</html>
