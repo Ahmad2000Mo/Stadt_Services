@@ -89,10 +89,10 @@
     <h3>Schritt 1: Zeitraum wählen</h3>
     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
       <label>Von:
-        <input type="number" id="fromYear" min="1900" max="2025" value="2015">
+        <input type="number" id="fromYear" min="1900" max="2100" value="2015">
       </label>
       <label>Bis:
-        <input type="number" id="toYear" min="1900" max="2025" value="2023">
+        <input type="number" id="toYear" min="1900" max="2100" value="2023">
       </label>
     </div>
     <div style="margin-top: 1rem;">
@@ -144,6 +144,9 @@
 // und die betroffenen Dienste melden einen Fehler statt abzustürzen.
 const CONFIG = window.STADT_CONFIG || {};
 
+// Feiertage und Schulferien werden für das laufende Jahr gezeigt.
+const JAHR = new Date().getFullYear();
+
 const germanStates = []; // Wird durch Fetch befüllt
 
 // Manuelle Liste der Bundesländer
@@ -163,11 +166,8 @@ fetch('landkreise.json')
       return name;
     });
 
-    germanStates.push(...kreise, ...bundeslaender);
-
-    // Optional: Duplikate entfernen
-    // const uniqueStates = [...new Set(germanStates)];
-    // console.log(uniqueStates);
+    // Set entfernt doppelte Namen (z. B. Stadt und Landkreis München, Bremen als Stadt und Land).
+    germanStates.push(...new Set([...kreise, ...bundeslaender]));
   })
   .catch(error => {
     console.error('Fehler beim Laden der Landkreis-Daten:', error);
@@ -301,7 +301,7 @@ fetch('landkreise.json')
                  "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"
              ];
          
-             const daysInMonth = (month) => new Date(2025, month + 1, 0).getDate();
+             const daysInMonth = (month) => new Date(JAHR, month + 1, 0).getDate();
          
              const table = document.createElement("table");
              table.className = "ferienkalender"; // gleiche Klasse für Layout
@@ -320,7 +320,7 @@ fetch('landkreise.json')
                  row.innerHTML = `<td>${day}</td>`;
          
                  for (let month = 0; month < 12; month++) {
-                     const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                     const dateStr = `${JAHR}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                      const date = new Date(dateStr);
          
                      let cell = document.createElement("td");
@@ -1008,7 +1008,7 @@ break;
                          });
                      break;
                  case 'holidays':
-                     fetch(`https://date.nager.at/api/v3/PublicHolidays/2025/DE`)
+                     fetch(`https://date.nager.at/api/v3/PublicHolidays/${JAHR}/DE`)
                          .then(res => res.json())
                          .then(data => {
                              if (!data || data.length === 0) {
@@ -1021,7 +1021,7 @@ break;
                                  date: new Date(f.date)
                              }));
          
-                             overlayBody.innerHTML = `<h3>Feiertagskalender 2025</h3><div id="feiertagsKalenderContainer"></div>`;
+                             overlayBody.innerHTML = `<h3>Feiertagskalender ${JAHR}</h3><div id="feiertagsKalenderContainer"></div>`;
                              renderFeiertagsKalender(feiertage);
                          })
                          .catch(() => {
@@ -1035,7 +1035,7 @@ break;
                          "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"
                      ];
          
-                     const daysInMonth = (month) => new Date(2025, month + 1, 0).getDate();
+                     const daysInMonth = (month) => new Date(JAHR, month + 1, 0).getDate();
          
                      const table = document.createElement("table");
                      table.className = "ferienkalender"; // gleiche Klasse für Layout
@@ -1054,7 +1054,7 @@ break;
                          row.innerHTML = `<td>${day}</td>`;
          
                          for (let month = 0; month < 12; month++) {
-                             const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                             const dateStr = `${JAHR}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                              const date = new Date(dateStr);
          
                              let cell = document.createElement("td");
@@ -1121,7 +1121,7 @@ break;
                  return;
              }
          
-             fetch(`https://ferien-api.maxleistner.de/api/v1/2025/${code}`)
+             fetch(`https://ferien-api.maxleistner.de/api/v1/${JAHR}/${code}`)
                  .then(res => res.json())
                  .then(data => {
                      if (!data || data.length === 0) {
@@ -1135,7 +1135,7 @@ break;
                          end: new Date(f.end)
                      }));
          
-                     overlayBody.innerHTML = `<h3>Ferienkalender 2025 für ${currentState} (${bundeslandName})</h3><div id="ferienKalenderContainer"></div>`;
+                     overlayBody.innerHTML = `<h3>Ferienkalender ${JAHR} für ${currentState} (${bundeslandName})</h3><div id="ferienKalenderContainer"></div>`;
                      renderFerienKalender(ferien);
                  })
                  .catch(() => overlayBody.innerHTML = 'Fehler beim Laden der Ferien.');
@@ -1145,8 +1145,6 @@ break;
          
          
              }
-         
-             overlayBody.innerHTML = content;
          }
          
          // Close overlay
@@ -1198,7 +1196,7 @@ document.addEventListener("click", function(e) {
          "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"
          ];
          
-         const daysInMonth = (month) => new Date(2025, month + 1, 0).getDate();
+         const daysInMonth = (month) => new Date(JAHR, month + 1, 0).getDate();
          
          const table = document.createElement("table");
          table.className = "ferienkalender";
@@ -1217,7 +1215,7 @@ document.addEventListener("click", function(e) {
          row.innerHTML = `<td>${day}</td>`;
          
          for (let month = 0; month < 12; month++) {
-             const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+             const dateStr = `${JAHR}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
              const date = new Date(dateStr);
          
              let cell = document.createElement("td");

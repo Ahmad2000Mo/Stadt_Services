@@ -4,6 +4,14 @@ Eine Webanwendung, die zu einer deutschen Stadt oder einem Landkreis Information
 
 Das Projekt ist im Informatikstudium an der Hochschule Bremerhaven entstanden. Ziel war, mehrere fremde APIs in einer Anwendung zu verbinden.
 
+![Übersicht der Dienste für Bremerhaven](docs/screenshot-dienste.png)
+
+| Statistik | Wetter | Schulferien |
+|-----------|--------|-------------|
+| ![Diagramm zur Bevölkerung](docs/screenshot-statistik.png) | ![Wetter und Vorhersage](docs/screenshot-wetter.png) | ![Ferienkalender](docs/screenshot-ferien.png) |
+
+Die Screenshots zeigen die echte Oberfläche mit Beispieldaten.
+
 ## Funktionen
 
 | Dienst       | Was angezeigt wird                                                  | Datenquelle |
@@ -31,6 +39,8 @@ Browser (index.html)
 | Datei                    | Inhalt |
 |--------------------------|--------|
 | `index.html`             | Oberfläche und JavaScript: Suche, Auswahl des Dienstes, Abruf und Darstellung der Daten |
+| `style.css`              | Aussehen: Farben, Karten, Overlay, Kalender, Diagramm-Bereich, mobile Ansicht |
+| `landkreise.json`        | Liste der 400 kreisfreien Städte und Landkreise für die Suche |
 | `genesis-statistics.php` | Kleiner Server-Teil: fragt die Statistik-API ab, wandelt die Antwort um und liefert JSON |
 | `config.example.js`      | Vorlage für die API-Schlüssel im Browser |
 | `config.example.php`     | Vorlage für den Zugang zur Statistik-API |
@@ -57,7 +67,9 @@ Danach `http://localhost:8000` im Browser öffnen.
 
 ## Bekannte Einschränkungen
 
-- **Zwei Dateien fehlen im Repository:** `style.css` (das Aussehen) und `landkreise.json` (die Liste der Städte und Landkreise für die Suche). Ohne sie startet die Seite ungestaltet, und die Suche kennt nur die 16 Bundesländer.
-- Feiertage und Schulferien sind fest auf das Jahr 2025 eingestellt.
 - Die Schlüssel in `config.js` sind für Besucher der Seite sichtbar, weil die Abfragen direkt aus dem Browser kommen. Für einen öffentlichen Betrieb sollten auch diese Abfragen über den Server laufen, so wie bei der Statistik.
 - Das gesamte JavaScript steht in `index.html`. Der nächste Schritt wäre, es in einzelne Dateien pro Dienst aufzuteilen.
+
+## Datenquelle der Ortsliste
+
+`landkreise.json` basiert auf der Kreisliste aus dem Projekt [covid-19-germany-gae](https://github.com/jgehrcke/covid-19-germany-gae) von Jan-Philip Gehrcke (MIT-Lizenz), angepasst an den Gebietsstand von 2021 (400 Kreise).

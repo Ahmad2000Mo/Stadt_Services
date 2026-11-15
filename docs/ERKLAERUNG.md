@@ -41,7 +41,7 @@ fetch(adresse)                 // 1. Anfrage schicken
 **Wetter (OpenWeatherMap):** Hier laufen zwei Abfragen gleichzeitig, eine für das aktuelle Wetter und eine für die Vorhersage. `Promise.all([...])` wartet, bis beide fertig sind.
 Die Vorhersage kommt in Schritten von drei Stunden. Der Code nimmt pro Tag nur den Wert von 12 Uhr.
 
-**Feiertage (Nager.Date):** Liefert alle Feiertage eines Jahres. `renderFeiertagsKalender` baut daraus eine Tabelle mit 31 Zeilen (Tage) und 12 Spalten (Monate) und färbt die Feiertage ein.
+**Feiertage (Nager.Date):** Liefert alle Feiertage eines Jahres. Das Jahr steht nicht fest im Code: `const JAHR = new Date().getFullYear()` nimmt immer das laufende Jahr. `renderFeiertagsKalender` baut daraus eine Tabelle mit 31 Zeilen (Tage) und 12 Spalten (Monate) und färbt die Feiertage ein.
 
 **Schulferien (ferien-api):** Ferien hängen vom Bundesland ab. Deshalb gibt es zwei Schritte: Erst fragt die Anwendung bei OpenPLZ, in welchem Bundesland der Ort liegt. Dann holt sie mit dem Kürzel des Bundeslands (zum Beispiel `HB` für Bremen) die Ferien.
 
@@ -78,4 +78,4 @@ Zwei weitere Änderungen an der Sicherheit im PHP-Skript:
 
 - **Was war die größte Schwierigkeit?** Jede API hat ein anderes Format und andere Regeln: Schlüssel in der Adresse, verschiedene Fehlercodes, bei GENESIS Text statt JSON. Dazu kommt die Abhängigkeit zwischen Abfragen, zum Beispiel erst Bundesland, dann Ferien.
 - **Was passiert, wenn eine API ausfällt?** Jeder Dienst hat ein eigenes `catch`. Fällt einer aus, zeigt nur dieses Fenster eine Fehlermeldung, die anderen Dienste laufen weiter.
-- **Was würdest du heute anders machen?** Das JavaScript in Dateien pro Dienst aufteilen, alle Abfragen mit Schlüssel über den Server leiten, das Jahr nicht fest eintragen, und Texte aus fremden APIs mit `textContent` statt `innerHTML` einsetzen, damit kein fremdes HTML in die Seite gelangt.
+- **Was würdest du heute anders machen?** Das JavaScript in Dateien pro Dienst aufteilen, alle Abfragen mit Schlüssel über den Server leiten, und Texte aus fremden APIs mit `textContent` statt `innerHTML` einsetzen, damit kein fremdes HTML in die Seite gelangt.
