@@ -137,7 +137,13 @@
   <div id="caption"></div>
 </div>
 
+      <!-- config.js enthält die API-Schlüssel (siehe config.example.js) -->
+      <script src="config.js"></script>
       <script>
+// API-Schlüssel aus config.js. Fehlt die Datei, bleibt das Objekt leer
+// und die betroffenen Dienste melden einen Fehler statt abzustürzen.
+const CONFIG = window.STADT_CONFIG || {};
+
 const germanStates = []; // Wird durch Fetch befüllt
 
 // Manuelle Liste der Bundesländer
@@ -429,7 +435,7 @@ fetch('landkreise.json')
 
         overlayBody.innerHTML = '<div class="loading"><div class="spinner"></div><p>Diagramme werden geladen...</p></div>';
 
-        fetch(`/it-service-v2/genesis-statistics.php?state=${encodeURIComponent(selectedcurrentState)}&category=${selectedCategory}&startYear=${from}&endYear=${to}`)
+        fetch(`genesis-statistics.php?state=${encodeURIComponent(selectedcurrentState)}&category=${selectedCategory}&startYear=${from}&endYear=${to}`)
             .then(res => res.json())
             .then(result => {
                 if (result.error) {
@@ -823,7 +829,7 @@ function addDashboardStyles() {
          
          break;
          case 'images':
-         const apiKey = "i33VXd3Uh2ox_CUxfgiGdP0dOFMGCXw1-4WbH59WjI4";
+         const apiKey = CONFIG.unsplashKey;
          const imageUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(currentState)}&per_page=30&orientation=landscape&client_id=${apiKey}`;
          
          overlayBody.innerHTML = '<div class="loading"><div class="spinner"></div><p>Bilder werden geladen...</p></div>';
@@ -853,7 +859,7 @@ function addDashboardStyles() {
          break;
          
 case 'news':
-  fetch(`https://gnews.io/api/v4/search?q=${currentState}&lang=de&token=430f95e5c34c4325cd47110d2937c417`)
+  fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(currentState)}&lang=de&token=${CONFIG.gnewsKey}`)
     .then(res => res.json())
     .then(data => {
       const articles = data.articles || data.results || [];
@@ -880,8 +886,8 @@ case 'news':
   break;
          case 'weather':
 Promise.all([
-fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentState},DE&units=metric&lang=de&appid=4ddd80a95db775ed3837773d5a82c5b2`).then(res => res.json()),
-fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${currentState},DE&units=metric&lang=de&appid=4ddd80a95db775ed3837773d5a82c5b2`).then(res => res.json())
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentState},DE&units=metric&lang=de&appid=${CONFIG.openWeatherKey}`).then(res => res.json()),
+fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${currentState},DE&units=metric&lang=de&appid=${CONFIG.openWeatherKey}`).then(res => res.json())
 ])
 .then(([current, forecast]) => {
 if (current.cod !== 200) {
@@ -963,7 +969,7 @@ console.error(err);
 overlayBody.innerHTML = '<p class="error">❌ Fehler beim Laden der Wetterdaten.</p>';
 });
 break;
-                     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentState},DE&units=metric&lang=de&appid=4ddd80a95db775ed3837773d5a82c5b2`)
+                     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentState},DE&units=metric&lang=de&appid=${CONFIG.openWeatherKey}`)
                          .then(res => res.json())
                          .then(data => {
                              if (data.cod !== 200) {
