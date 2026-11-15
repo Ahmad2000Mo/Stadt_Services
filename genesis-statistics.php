@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Fehler nicht an den Browser ausgeben (würde das JSON zerstören und Interna verraten).
+ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
@@ -40,7 +40,19 @@ $table = $tables[$category];
 $zeitraum = implode(',', range($startYear, $endYear));
 
 // API Request zusammenbauen
-$token   = '4e22c3bb8d284e8a97ce79ea53d04d20';
+// Der Zugangs-Token steht nicht im Code. Er kommt aus der Umgebungsvariable
+// GENESIS_TOKEN oder aus der Datei config.php (siehe config.example.php).
+$token = getenv('GENESIS_TOKEN') ?: null;
+if (!$token && is_file(__DIR__ . '/config.php')) {
+    $config = require __DIR__ . '/config.php';
+    $token  = $config['genesis_token'] ?? null;
+}
+if (!$token) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Kein Genesis-Token konfiguriert (siehe config.example.php).']);
+    exit;
+}
+
 $baseUrl = 'https://www-genesis.destatis.de/genesisWS/rest/2020';
 
 $endpoint = $baseUrl . '/data/table?' . http_build_query([
@@ -57,7 +69,7 @@ $ch = curl_init();
 curl_setopt_array($ch, [
     CURLOPT_URL => $endpoint,
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_TIMEOUT => 20,
 ]);
 
 $response = curl_exec($ch);
